@@ -3,63 +3,125 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 
 const page = () => {
-  let [Userlist,setUserlist] =useState([])
-  let [UpdateData,setUpdateData] = useState(false)
-  let [updateId,setupdateId] = useState("")
-  let [FromData,setFromData] = useState({
-    username:"",
-    email:"",
-    password:""
-  })
-  let [Error,setError] = useState({
-    username:"",
-    email:"",
-    password:""
-  })
-  let handleFrom =(e)=>{
-    let{name,value} = e.target
-    setFromData({...FromData,[name]:value})
-    setError({})
+  const [Userlist, setUserlist] = useState([]);
+  const [UpdateData, setUpdateData] = useState(false);
+  const [updateId, setupdateId] = useState("");
 
-  }
-  let handlSubmit= async ()=>{
-    const response = await axios.post('http://localhost:8000/registration', {
-    username: FromData.username,
-    email: FromData.email,
-    password:FromData.password
-    });
-  }
+  const [FromData, setFromData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
 
-  const handleDelete = async (i)=>{
-    await axios.delete(`http://localhost:8000/deleteUsesr/${i._id}`)
-  
-  }
-  const handleUpdate = async(i)=>{
-    setUpdateData(true)
-    setupdateId(i._id)
+  const [Error, setError] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  // Get All Users
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/alluser"
+      );
+
+      setUserlist(response.data.users);
+    } catch (error) {
+      console.log("Fetch Users Error:", error);
+    }
+  };
+
+  // Input Change
+  const handleFrom = (e) => {
+    const { name, value } = e.target;
+
     setFromData({
-      username:i.username,
-      email:i.email,
-      password:i.password
-    })
-  }
-  const handlDataUpdate =async ()=>{
-    const Update = await axios.post(`http://localhost:8000/updateUser/${updateId}`,{
-    username: FromData.username,
-    email: FromData.email,
-    password:FromData.password
-    })
-    console.log(Update)
-  }
-   useEffect(() => {
-        async function fetchUsers() {
-                const response = await axios.get(
-                    "http://localhost:8000/alluser"
-                );
-                setUserlist(response.data.users);
+      ...FromData,
+      [name]: value,
+    });
+
+    setError({});
+  };
+
+  // Create User
+  const handlSubmit = async () => {
+    try {
+      await axios.post("http://localhost:8000/registration", {
+        username: FromData.username,
+        email: FromData.email,
+        password: FromData.password,
+      });
+      fetchUsers();
+      // Form clear
+      setFromData({
+        username: "",
+        email: "",
+        password: "",
+      });
+    } catch (error) {
+      console.log("Registration Error:", error);
+    }
+  };
+
+  // Delete User
+  const handleDelete = async (i) => {
+    try {
+      await axios.delete(
+        `http://localhost:8000/deleteUsesr/${i._id}`
+      );
+
+      fetchUsers();
+    } catch (error) {
+      console.log("Delete User Error:", error);
+    }
+  };
+
+  // Edit User
+  const handleUpdate = async (i) => {
+      setUpdateData(true);
+      setupdateId(i._id);
+
+      setFromData({
+        username: i.username,
+        email: i.email,
+        password: i.password,
+      });
+  };
+
+  // Update User
+  const handlDataUpdate = async () => {
+    try {
+      await axios.post(
+        `http://localhost:8000/updateUser/${updateId}`,
+        {
+          username: FromData.username,
+          email: FromData.email,
+          password: FromData.password,
         }
-        fetchUsers();
-    }, []);
+      );
+
+      setupdateId("");
+      setUpdateData(false);
+
+      // Form clear
+      setFromData({
+        username: "",
+        email: "",
+        password: "",
+      });
+
+      // Updated data 
+      fetchUsers();
+    } catch (error) {
+      console.log("Update User Error:", error);
+    }
+  };
+
+  // Initial Data Fetch
+  useEffect(() => {
+    fetchUsers();
+  }, []);
   return (
     <>
 <div className='min-h-screen flex flex-col items-center justify-center gap-2'>
