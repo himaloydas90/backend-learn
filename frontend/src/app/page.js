@@ -23,7 +23,7 @@ const page = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/alluser"
+        "http://localhost:8000/api/v1/alluser"
       );
 
       setUserlist(response.data.users);
@@ -47,7 +47,7 @@ const page = () => {
   // Create User
   const handlSubmit = async () => {
     try {
-      await axios.post("http://localhost:8000/registration", {
+      await axios.post("http://localhost:8000/api/v1/registration", {
         username: FromData.username,
         email: FromData.email,
         password: FromData.password,
@@ -68,7 +68,7 @@ const page = () => {
   const handleDelete = async (i) => {
     try {
       await axios.delete(
-        `http://localhost:8000/deleteUsesr/${i._id}`
+        `http://localhost:8000/api/v1/deleteUsesr/${i._id}`
       );
 
       fetchUsers();
@@ -93,7 +93,7 @@ const page = () => {
   const handlDataUpdate = async () => {
     try {
       await axios.post(
-        `http://localhost:8000/updateUser/${updateId}`,
+        `http://localhost:8000/api/v1/updateUser/${updateId}`,
         {
           username: FromData.username,
           email: FromData.email,
@@ -122,6 +122,7 @@ const page = () => {
   useEffect(() => {
     fetchUsers();
   }, []);
+
   return (
     <>
 <div className='min-h-screen flex flex-col items-center justify-center gap-2'>
