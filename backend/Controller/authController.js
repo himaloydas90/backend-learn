@@ -178,6 +178,12 @@ const allUser = async (req, res) => {
 
     }
 }
+const imageUploder = async (req, res) => {
+    res.send("Uplode successfully")
+
+
+}
+
 
 
 module.exports = {
@@ -185,5 +191,6 @@ module.exports = {
     bankinfocontroller,
     allUser,
     deletUser,
-    updateUser
+    updateUser,
+    imageUploder
 };
