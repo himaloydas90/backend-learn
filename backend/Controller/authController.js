@@ -1,4 +1,5 @@
 const usermodel = require('../model/usermodel')
+const imagemodel = require('../model/imagemodel')
 
 const {
     response
@@ -179,7 +180,30 @@ const allUser = async (req, res) => {
     }
 }
 const imageUploder = async (req, res) => {
-    res.send("Uplode successfully")
+    try {
+        if(!req.file){
+            return res.status(400).json({
+                success: false,
+                message: "Image is required"
+            });
+        }
+        const image = new imagemodel({
+            image: req.file.filename
+        })
+        await image.save();
+        return res.status(201).json({
+            success: true,
+            message: "Image uploaded successfully",
+            image: image
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Error uploading image",
+            error: error.message
+        });
+    }
 
 
 }

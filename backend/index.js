@@ -10,6 +10,7 @@ const router = require("./route/index.js")
 app.use(express.json());
 app.use(cors())
 app.use(router)
+app.use('/uploads', express.static('uploads'));
 const port = process.env.PORT || 8000;
 
 app.get("/", (req, res) => {

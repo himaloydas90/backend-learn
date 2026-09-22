@@ -12,6 +12,17 @@ const page = () => {
     email: "",
     password: "",
   });
+  const handleSubmit = async(e) => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+
+   await axios.post(
+    "http://localhost:8000/api/v1/imageUploder",
+    formData
+  );
+  e.target.reset();
+};
 
   const [Error, setError] = useState({
     username: "",
@@ -140,6 +151,23 @@ const page = () => {
     )
   }
   </div>
+  <div className='mt-3'>
+    <form onSubmit={handleSubmit} className='flex gap-2.5'>
+  <input
+  className='border border-gray-300 rounded-md w-96'
+  type="file"
+  name='avatar'
+  accept="image/*"
+/>
+
+<button
+  type='submit'
+  className="bg-slate-900 text-white p-3 rounded-md cursor-pointer"
+>
+  Upload Image
+</button>
+    </form>
+</div>
 
   {Userlist.length === 0 ? (
   <p className="text-red-500 text-9xl">
